@@ -35,6 +35,30 @@ export class Product extends Entity<ProductProps> {
         return this.props.available
     }
 
+    set name(name: string) {
+        this.props.name = name
+    }
+
+    set image(image: string) {
+        this.props.image = image
+    }
+
+    set category(category: string) {
+        this.props.category = category
+    }
+
+    set new_price(new_price: number) {
+        this.props.new_price = new_price
+    }
+
+    set old_price(old_price: number) {
+        this.props.old_price = old_price
+    }
+
+    set available(value: boolean) {
+        this.props.available = value
+    }
+
     static create(props: ProductProps, id?: UniqueID) {
         const product = new Product({
             ...props,

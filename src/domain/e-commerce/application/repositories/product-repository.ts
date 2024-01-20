@@ -6,4 +6,5 @@ export interface ProductRepository {
     findById(id: string): Promise<Product | null>
     delete(id: string): Promise<void>
     fetchProducts(): Promise<Product[]>
+    save(product: Product): Promise<void>
 }

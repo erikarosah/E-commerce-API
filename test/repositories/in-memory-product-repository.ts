@@ -37,4 +37,10 @@ export class InMemoryProductRepository implements ProductRepository {
     async fetchProducts() {
         return this.items
     }
+
+    async save(product: Product) {
+        const itemIndex = this.items.findIndex((item) => item.id === product.id)
+
+        this.items[itemIndex] = product
+    }
 }
