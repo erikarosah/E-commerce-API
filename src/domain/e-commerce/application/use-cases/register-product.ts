@@ -25,6 +25,11 @@ export class RegisterProductUseCase {
         old_price,
         available,
     }: RegisterProductUseCaseRequest): Promise<RegisterProductUseCaseResponse> {
+        const productAlreadyRegistered = await this.productRepository.findByName(name)
+
+        if (productAlreadyRegistered) {
+            throw new Error('Not allowed')
+        }
 
         const product = Product.create({
             name,
