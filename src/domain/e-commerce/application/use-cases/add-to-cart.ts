@@ -27,9 +27,7 @@ export class AddToCartUseCase {
             const productAlreadyAdded = user.cart.find((item) => item.id === product.id)
 
             if (productAlreadyAdded) {
-                product.adds = product.adds + 1
-
-                await this.productRepository.save(product)
+                productAlreadyAdded.adds = productAlreadyAdded.adds + 1
 
             } else {
                 user.cart.push(product)

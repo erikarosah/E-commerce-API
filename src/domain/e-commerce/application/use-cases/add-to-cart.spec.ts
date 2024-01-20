@@ -16,7 +16,7 @@ describe('Add to Cart Use Case', () => {
         sut = new AddToCartUseCase(inMemoryUserRepositoty, inMemoryProductRepositoty)
     })
 
-    it('should be able to add products to cart', async () => {
+    it('should be able to add a product to cart', async () => {
         const user = User.create({
             name: 'some name',
             email: 'some email',
