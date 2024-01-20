@@ -14,7 +14,7 @@ describe('Register Product Use Case', () => {
     })
 
     it('should be able to register a product', async () => {
-        const product = Product.create({
+        await sut.execute({
             name: 'some product',
             available: true,
             category: 'some category',
@@ -23,10 +23,8 @@ describe('Register Product Use Case', () => {
             old_price: 40
         })
 
-        await sut.execute(product)
-
         expect(inMemoryProductRepositoty.items).toHaveLength(1)
-        expect(inMemoryProductRepositoty.items[0].name).toEqual(product.name)
+        expect(inMemoryProductRepositoty.items[0].name).toEqual('some product')
     })
 
     it('should not be able to register a product once again', async () => {
