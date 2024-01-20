@@ -31,6 +31,6 @@ export class InMemoryProductRepository implements ProductRepository {
     async delete(id: string) {
         const productIndex = this.items.findIndex((item) => item.id.toString() === id)
 
-        this.items.slice(productIndex, 1)
+        this.items.splice(productIndex, 1)
     }
 }
