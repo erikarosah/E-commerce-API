@@ -1,5 +1,6 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueID } from '@/core/entities/unique-id'
+import { Optional } from '@/core/types/optional'
 
 interface ProductProps {
     name: string,
@@ -7,7 +8,8 @@ interface ProductProps {
     category: string,
     new_price: number,
     old_price: number,
-    available: boolean
+    available: boolean,
+    adds: number
 }
 
 export class Product extends Entity<ProductProps> {
@@ -35,6 +37,10 @@ export class Product extends Entity<ProductProps> {
         return this.props.available
     }
 
+    get adds() {
+        return this.props.adds
+    }
+
     set name(name: string) {
         this.props.name = name
     }
@@ -59,9 +65,14 @@ export class Product extends Entity<ProductProps> {
         this.props.available = value
     }
 
-    static create(props: ProductProps, id?: UniqueID) {
+    set adds(value: number) {
+        this.props.adds = value
+    }
+
+    static create(props: Optional<ProductProps, 'adds'>, id?: UniqueID) {
         const product = new Product({
             ...props,
+            adds: props.adds ?? 1
         },
             id
         )

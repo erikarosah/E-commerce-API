@@ -1,5 +1,6 @@
 import { User } from '../../entities/user'
 import { UserRepository } from '../repositories/user-repository'
+import { hash } from 'bcrypt'
 
 interface RegisterUserUseCaseRequest {
     name: string,
@@ -25,10 +26,12 @@ export class RegisterUserUseCase {
             throw new Error('Not allowed')
         }
 
+        const password_hash = await hash(password, 6)
+
         const user = User.create({
             name,
             email,
-            password
+            password: password_hash
         })
 
         await this.userRepository.create(user)
