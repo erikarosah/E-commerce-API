@@ -1,14 +1,14 @@
 import { Product } from '../../entities/product'
 import { ProductRepository } from '../repositories/product-repository'
 
-interface FetchProductUseCaseResponse {
+interface FetchProductsUseCaseResponse {
     products: Product[]
 }
 
-export class FetchProductUseCase {
+export class FetchProductsUseCase {
     constructor(private productRepository: ProductRepository) { }
 
-    async execute(): Promise<FetchProductUseCaseResponse> {
+    async execute(): Promise<FetchProductsUseCaseResponse> {
         const products = await this.productRepository.fetchProducts()
 
         if (products.length === 0) {
