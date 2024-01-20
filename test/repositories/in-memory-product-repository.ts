@@ -33,4 +33,8 @@ export class InMemoryProductRepository implements ProductRepository {
 
         this.items.splice(productIndex, 1)
     }
+
+    async fetchProducts() {
+        return this.items
+    }
 }
