@@ -2,6 +2,7 @@ import { InMemoryUserRepository } from 'test/repositories/in-memory-user-reposit
 import { describe, beforeEach, it, expect } from 'vitest'
 import { RegisterUserUseCase } from './register-user'
 import { User } from '../../entities/user'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 let inMemoryUserRepositoty: InMemoryUserRepository
 let sut: RegisterUserUseCase
@@ -13,12 +14,13 @@ describe('Register User Use Case', () => {
     })
 
     it('should be able to register a user', async () => {
-        await sut.execute({
+        const result = await sut.execute({
             name: 'some name',
             email: 'some email',
             password: 'some password'
         })
 
+        expect(result.isRight()).toBe(true)
         expect(inMemoryUserRepositoty.items).toHaveLength(1)
         expect(inMemoryUserRepositoty.items[0]).toMatchObject({
             name: 'some name'
@@ -34,12 +36,13 @@ describe('Register User Use Case', () => {
 
         inMemoryUserRepositoty.create(user)
 
-        await expect(() =>
-            sut.execute({
-                name: 'another name',
-                email: user.email,
-                password: 'another password'
-            })
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            name: 'another name',
+            email: user.email,
+            password: 'another password'
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 })

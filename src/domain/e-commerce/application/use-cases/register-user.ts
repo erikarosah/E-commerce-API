@@ -1,6 +1,8 @@
+import { Either, left, right } from '@/core/either'
 import { User } from '../../entities/user'
 import { UserRepository } from '../repositories/user-repository'
 import { hash } from 'bcrypt'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface RegisterUserUseCaseRequest {
     name: string,
@@ -8,9 +10,12 @@ interface RegisterUserUseCaseRequest {
     password: string
 }
 
-interface RegisterUserUseCaseResponse {
-    user: User
-}
+type RegisterUserUseCaseResponse = Either<
+    NotAllowedError,
+    {
+        user: User
+    }
+>
 
 export class RegisterUserUseCase {
     constructor(private userRepository: UserRepository) { }
@@ -23,7 +28,7 @@ export class RegisterUserUseCase {
         const userAlreadyRegistered = await this.userRepository.findByEmail(email)
 
         if (userAlreadyRegistered) {
-            throw new Error('Not allowed')
+            return left(new NotAllowedError())
         }
 
         const password_hash = await hash(password, 6)
@@ -36,8 +41,8 @@ export class RegisterUserUseCase {
 
         await this.userRepository.create(user)
 
-        return {
+        return right({
             user
-        }
+        })
     }
 }

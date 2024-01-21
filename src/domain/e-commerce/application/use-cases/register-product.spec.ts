@@ -3,6 +3,7 @@ import { InMemoryProductRepository } from 'test/repositories/in-memory-product-r
 import { RegisterProductUseCase } from './register-product'
 import { Product } from '../../entities/product'
 import { UniqueID } from '@/core/entities/unique-id'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
 let sut: RegisterProductUseCase
@@ -14,7 +15,7 @@ describe('Register Product Use Case', () => {
     })
 
     it('should be able to register a product', async () => {
-        await sut.execute({
+        const result = await sut.execute({
             name: 'some product',
             available: true,
             category: 'Kids',
@@ -24,6 +25,10 @@ describe('Register Product Use Case', () => {
             sizes: []
         })
 
+        expect(result.isRight()).toBe(true)
+        expect(result.value).toMatchObject(
+            expect.objectContaining({ product: expect.any(Object) })
+        )
         expect(inMemoryProductRepositoty.items).toHaveLength(1)
         expect(inMemoryProductRepositoty.items[0].name).toEqual('some product')
     })
@@ -43,8 +48,10 @@ describe('Register Product Use Case', () => {
 
         inMemoryProductRepositoty.create(product)
 
-        expect(() =>
-            sut.execute(product)
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute(product)
+
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(NotAllowedError)
     })
 })

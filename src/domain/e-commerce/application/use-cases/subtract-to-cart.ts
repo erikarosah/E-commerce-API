@@ -1,12 +1,17 @@
+import { Either, left, right } from '@/core/either'
 import { ProductRepository } from '../repositories/product-repository'
 import { UserRepository } from '../repositories/user-repository'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 interface SubtractToCartUseCaseRequest {
     userId: string,
     productId: string
 }
 
-interface SubtractToCartUseCaseResponse { }
+type SubtractToCartUseCaseResponse = Either<
+    ResourceNotFoundError,
+    {}
+>
 
 export class SubtractToCartUseCase {
     constructor(
@@ -34,10 +39,10 @@ export class SubtractToCartUseCase {
                 }
 
             } else {
-                throw new Error('Resource not found')
+                return left(new ResourceNotFoundError())
             }
         }
 
-        return {}
+        return right({})
     }
 }

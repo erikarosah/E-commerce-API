@@ -1,5 +1,7 @@
+import { Either, left, right } from '@/core/either'
 import { Product } from '../../entities/product'
 import { ProductRepository } from '../repositories/product-repository'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface RegisterProductUseCaseRequest {
     name: string,
@@ -11,9 +13,12 @@ interface RegisterProductUseCaseRequest {
     sizes: string[]
 }
 
-interface RegisterProductUseCaseResponse {
-    product: Product
-}
+type RegisterProductUseCaseResponse = Either<
+    NotAllowedError,
+    {
+        product: Product
+    }
+>
 
 export class RegisterProductUseCase {
     constructor(private productRepository: ProductRepository) { }
@@ -30,7 +35,7 @@ export class RegisterProductUseCase {
         const productAlreadyRegistered = await this.productRepository.findByName(name)
 
         if (productAlreadyRegistered) {
-            throw new Error('Not allowed')
+            return left(new NotAllowedError())
         }
 
         const product = Product.create({
@@ -45,8 +50,8 @@ export class RegisterProductUseCase {
 
         await this.productRepository.create(product)
 
-        return {
+        return right({
             product
-        }
+        })
     }
 }

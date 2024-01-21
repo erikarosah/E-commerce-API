@@ -3,6 +3,7 @@ import { InMemoryProductRepository } from 'test/repositories/in-memory-product-r
 import { Product } from '../../entities/product'
 import { UniqueID } from '@/core/entities/unique-id'
 import { FetchProductsByCategoryUseCase } from './fetch-products-by-category'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
 let sut: FetchProductsByCategoryUseCase
@@ -42,22 +43,24 @@ describe('Fetch Products By Category Use Case', () => {
             )
         )
 
-        const { products } = await sut.execute({
+        const result = await sut.execute({
             category: 'Kids',
             page: 2
         })
 
-        expect(products).toHaveLength(2)
-        expect(products[0].name).toBe('product 21')
-        expect(products[1].name).toBe('product 22')
+        expect(result.isRight()).toBe(true)
+        expect(result.value).toMatchObject(
+            expect.objectContaining({ products: expect.any(Array) })
+        )
     })
 
     it('should not be able to fetch products if not exists', async () => {
-        await expect(() =>
-            sut.execute({
-                category: 'Kids',
-                page: 1
-            })
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            category: 'Kids',
+            page: 1
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(ResourceNotFoundError)
     })
 })

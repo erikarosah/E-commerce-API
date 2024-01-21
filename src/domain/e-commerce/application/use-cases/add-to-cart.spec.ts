@@ -37,16 +37,16 @@ describe('Add to Cart Use Case', () => {
 
         inMemoryProductRepositoty.create(product)
 
-        await sut.execute({
+        const result = await sut.execute({
             userId: user.id.toString(),
             productId: product.id.toString()
         })
 
+        expect(result.isRight()).toBe(true)
         expect(inMemoryUserRepositoty.items[0].cart).toHaveLength(1)
         expect(inMemoryUserRepositoty.items[0].cart).toEqual([
             expect.objectContaining({ name: product.name })
         ])
-
     })
 
     it('should be able to add several products to cart', async () => {

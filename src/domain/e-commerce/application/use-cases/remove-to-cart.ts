@@ -1,12 +1,17 @@
+import { Either, left, right } from '@/core/either'
 import { ProductRepository } from '../repositories/product-repository'
 import { UserRepository } from '../repositories/user-repository'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 interface RemoveToCartUseCaseRequest {
     userId: string,
     productId: string
 }
 
-interface RemoveToCartUseCaseResponse { }
+type RemoveToCartUseCaseResponse = Either<
+    ResourceNotFoundError,
+    {}
+>
 
 export class RemoveToCartUseCase {
     constructor(
@@ -30,10 +35,10 @@ export class RemoveToCartUseCase {
                 user.cart.splice(productIndex, 1)
 
             } else {
-                throw new Error('Resource not found')
+                return left(new ResourceNotFoundError())
             }
         }
 
-        return {}
+        return right({})
     }
 }

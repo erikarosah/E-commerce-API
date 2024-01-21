@@ -46,11 +46,12 @@ describe('Subtract to Cart Use Case', () => {
             userId: user.id.toString()
         })
 
-        await sut.execute({
+        const result = await sut.execute({
             productId: product.id.toString(),
             userId: user.id.toString()
         })
 
+        expect(result.isRight()).toBe(true)
         expect(inMemoryUserRepository.items[0].cart).toHaveLength(0)
     })
 

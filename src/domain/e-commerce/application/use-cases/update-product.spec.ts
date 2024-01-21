@@ -3,6 +3,7 @@ import { InMemoryProductRepository } from 'test/repositories/in-memory-product-r
 import { UpdateProductUseCase } from './update-product'
 import { Product } from '../../entities/product'
 import { UniqueID } from '@/core/entities/unique-id'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
 let sut: UpdateProductUseCase
@@ -26,7 +27,7 @@ describe('Update Product Use Case', () => {
 
         inMemoryProductRepositoty.create(product)
 
-        await sut.execute({
+        const result = await sut.execute({
             id: product.id.toString(),
             name: 'new name product',
             available: false,
@@ -37,6 +38,7 @@ describe('Update Product Use Case', () => {
             sizes: ['P']
         })
 
+        expect(result.isRight()).toBe(true)
         expect(inMemoryProductRepositoty.items[0]).toMatchObject({
             name: 'new name product',
             available: false,
@@ -45,17 +47,18 @@ describe('Update Product Use Case', () => {
     })
 
     it('should not be able to update product if not exists', async () => {
-        expect(() =>
-            sut.execute({
-                id: '1',
-                name: 'new name product',
-                available: false,
-                category: 'Kids',
-                image: 'url',
-                new_price: 50,
-                old_price: 40,
-                sizes: []
-            })
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            id: '1',
+            name: 'new name product',
+            available: false,
+            category: 'Kids',
+            image: 'url',
+            new_price: 50,
+            old_price: 40,
+            sizes: []
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(ResourceNotFoundError)
     })
 })

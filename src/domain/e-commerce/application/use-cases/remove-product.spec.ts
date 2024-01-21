@@ -3,6 +3,7 @@ import { InMemoryProductRepository } from 'test/repositories/in-memory-product-r
 import { RemoveProductUseCase } from './remove-product'
 import { Product } from '../../entities/product'
 import { UniqueID } from '@/core/entities/unique-id'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
 let sut: RemoveProductUseCase
@@ -27,18 +28,20 @@ describe('Remove Product Use Case', () => {
 
         inMemoryProductRepositoty.create(product)
 
-        await sut.execute({
+        const result = await sut.execute({
             id: product.id.toString()
         })
 
+        expect(result.isRight()).toBe(true)
         expect(inMemoryProductRepositoty.items).toHaveLength(0)
     })
 
     it('should not be able to remove a non-existent product ', async () => {
-        expect(() =>
-            sut.execute({
-                id: '1'
-            })
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            id: '1'
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(ResourceNotFoundError)
     })
 })

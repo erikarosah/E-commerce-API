@@ -3,6 +3,7 @@ import { expect, describe, it, beforeEach } from 'vitest'
 import { AuthenticateUseCase } from './authenticate'
 import { User } from '../../entities/user'
 import { hash } from 'bcrypt'
+import { InvalidCrendentialsError } from './errors/invalid-credentials-error'
 
 let inMemoryUserRepository: InMemoryUserRepository
 let sut: AuthenticateUseCase
@@ -24,12 +25,15 @@ describe('Authentication Use Case', () => {
             })
         )
 
-        const { user } = await sut.execute({
+        const result = await sut.execute({
             email: 'johndoe@gmail.com',
             password: '123456'
         })
 
-        expect(user.password).toEqual(hashedPassword)
+        expect(result.isRight()).toBe(true)
+        expect(inMemoryUserRepository.items[0]).toMatchObject(
+            expect.objectContaining({ email: 'johndoe@gmail.com' })
+        )
     })
 
     it('should not be able to authentication with wrong email', async () => {
@@ -41,12 +45,13 @@ describe('Authentication Use Case', () => {
 
         inMemoryUserRepository.create(newUser)
 
-        await expect(() =>
-            sut.execute({
-                email: 'johndoe1@gmail.com',
-                password: '123456'
-            }),
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            email: 'johndoe1@gmail.com',
+            password: '123456'
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(InvalidCrendentialsError)
     })
 
     it('should not be able to authentication with wrong password', async () => {
@@ -58,11 +63,12 @@ describe('Authentication Use Case', () => {
 
         inMemoryUserRepository.create(newUser)
 
-        await expect(() =>
-            sut.execute({
-                email: newUser.email,
-                password: '1234567'
-            }),
-        ).rejects.toBeInstanceOf(Error)
+        const result = await sut.execute({
+            email: newUser.email,
+            password: '1234567'
+        })
+
+        expect(result.isLeft()).toBe(true)
+        expect(result.value).toBeInstanceOf(InvalidCrendentialsError)
     })
 })

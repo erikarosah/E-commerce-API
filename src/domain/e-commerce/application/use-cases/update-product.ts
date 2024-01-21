@@ -1,4 +1,7 @@
+import { Either, left, right } from '@/core/either'
 import { ProductRepository } from '../repositories/product-repository'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { Product } from '../../entities/product'
 
 interface UpdateProductUseCaseRequest {
     id: string,
@@ -11,7 +14,12 @@ interface UpdateProductUseCaseRequest {
     sizes: string[]
 }
 
-interface UpdateProductUseCaseResponse { }
+type UpdateProductUseCaseResponse = Either<
+    ResourceNotFoundError,
+    {
+        product: Product
+    }
+>
 
 export class UpdateProductUseCase {
     constructor(private productRepository: ProductRepository) { }
@@ -29,7 +37,7 @@ export class UpdateProductUseCase {
         const product = await this.productRepository.findById(id)
 
         if (!product) {
-            throw new Error('Resource not found')
+            return left(new ResourceNotFoundError())
         }
 
         product.name = name
@@ -42,6 +50,8 @@ export class UpdateProductUseCase {
 
         await this.productRepository.save(product)
 
-        return {}
+        return right({
+            product
+        })
     }
 }
