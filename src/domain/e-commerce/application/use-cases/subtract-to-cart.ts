@@ -1,14 +1,14 @@
 import { ProductRepository } from '../repositories/product-repository'
 import { UserRepository } from '../repositories/user-repository'
 
-interface RemoveToCartUseCaseRequest {
+interface SubtractToCartUseCaseRequest {
     userId: string,
     productId: string
 }
 
-interface RemoveToCartUseCaseResponse { }
+interface SubtractToCartUseCaseResponse { }
 
-export class RemoveToCartUseCase {
+export class SubtractToCartUseCase {
     constructor(
         private userRepository: UserRepository,
         private productRepository: ProductRepository
@@ -17,7 +17,7 @@ export class RemoveToCartUseCase {
     async execute({
         userId,
         productId
-    }: RemoveToCartUseCaseRequest): Promise<RemoveToCartUseCaseResponse> {
+    }: SubtractToCartUseCaseRequest): Promise<SubtractToCartUseCaseResponse> {
 
         const product = await this.productRepository.findById(productId)
         const user = await this.userRepository.findById(userId)

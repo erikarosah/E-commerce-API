@@ -1,6 +1,6 @@
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryProductRepository } from 'test/repositories/in-memory-product-repository'
-import { RemoveToCartUseCase } from './remove-to-cart'
+import { SubtractToCartUseCase } from './subtract-to-cart'
 import { InMemoryUserRepository } from 'test/repositories/in-memory-user-repository'
 import { User } from '../../entities/user'
 import { Product } from '../../entities/product'
@@ -10,16 +10,16 @@ import { UniqueID } from '@/core/entities/unique-id'
 let inMemoryUserRepository: InMemoryUserRepository
 let inMemoryProductRepositoty: InMemoryProductRepository
 let addToCartUseCase: AddToCartUseCase
-let sut: RemoveToCartUseCase
+let sut: SubtractToCartUseCase
 
-describe('Remove to Cart Use Case', () => {
+describe('Subtract to Cart Use Case', () => {
     beforeEach(() => {
         inMemoryUserRepository = new InMemoryUserRepository
         inMemoryProductRepositoty = new InMemoryProductRepository
-        sut = new RemoveToCartUseCase(inMemoryUserRepository, inMemoryProductRepositoty)
+        sut = new SubtractToCartUseCase(inMemoryUserRepository, inMemoryProductRepositoty)
     })
 
-    it('should be able to remove a product to cart', async () => {
+    it('should be able to subtract a product to cart', async () => {
         addToCartUseCase = new AddToCartUseCase(inMemoryUserRepository, inMemoryProductRepositoty)
 
         const user = User.create({
@@ -54,7 +54,7 @@ describe('Remove to Cart Use Case', () => {
         expect(inMemoryUserRepository.items[0].cart).toHaveLength(0)
     })
 
-    it('should be able to remove several products to cart', async () => {
+    it('should be able to subtract several products to cart', async () => {
         addToCartUseCase = new AddToCartUseCase(inMemoryUserRepository, inMemoryProductRepositoty)
 
         const user = User.create({
@@ -87,11 +87,16 @@ describe('Remove to Cart Use Case', () => {
             })
         }
 
-        await sut.execute({
-            productId: '1',
-            userId: user.id.toString()
-        })
+        for (let i = 1; i <= 4; i++) {
+            await sut.execute({
+                productId: `${i}`,
+                userId: user.id.toString()
+            })
+        }
 
-        expect(inMemoryUserRepository.items[0].cart).toHaveLength(4)
+        expect(inMemoryUserRepository.items[0].cart).toHaveLength(1)
+        expect(inMemoryUserRepository.items[0].cart).toEqual([
+            expect.objectContaining({ name: 'product 5' })
+        ])
     })
 })
