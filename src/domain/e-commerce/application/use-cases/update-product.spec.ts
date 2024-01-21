@@ -17,10 +17,9 @@ describe('Update Product Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
-            new_price: 50,
-            old_price: 40
+            new_price: 50
         },
             new UniqueID('1')
         )
@@ -31,16 +30,17 @@ describe('Update Product Use Case', () => {
             id: product.id.toString(),
             name: 'new name product',
             available: false,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
-            old_price: 40
+            old_price: 0,
+            sizes: ['P']
         })
 
         expect(inMemoryProductRepositoty.items[0]).toMatchObject({
             name: 'new name product',
             available: false,
-            old_price: 40
+            sizes: ['P']
         })
     })
 
@@ -50,10 +50,11 @@ describe('Update Product Use Case', () => {
                 id: '1',
                 name: 'new name product',
                 available: false,
-                category: 'some category',
+                category: 'Kids',
                 image: 'url',
                 new_price: 50,
-                old_price: 40
+                old_price: 40,
+                sizes: []
             })
         ).rejects.toBeInstanceOf(Error)
     })

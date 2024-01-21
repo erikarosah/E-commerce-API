@@ -33,7 +33,7 @@ describe('Remove to Cart Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
             old_price: 40
@@ -70,7 +70,7 @@ describe('Remove to Cart Use Case', () => {
                 Product.create({
                     name: `product ${i}`,
                     available: true,
-                    category: 'some category',
+                    category: 'Kids',
                     image: 'url',
                     new_price: 50,
                     old_price: 40

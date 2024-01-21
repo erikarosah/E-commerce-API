@@ -1,6 +1,10 @@
 import { Product } from '../../entities/product'
 import { ProductRepository } from '../repositories/product-repository'
 
+interface FetchProductsUseCaseRequest {
+    page: number
+}
+
 interface FetchProductsUseCaseResponse {
     products: Product[]
 }
@@ -8,8 +12,10 @@ interface FetchProductsUseCaseResponse {
 export class FetchProductsUseCase {
     constructor(private productRepository: ProductRepository) { }
 
-    async execute(): Promise<FetchProductsUseCaseResponse> {
-        const products = await this.productRepository.fetchProducts()
+    async execute({
+        page
+    }: FetchProductsUseCaseRequest): Promise<FetchProductsUseCaseResponse> {
+        const products = await this.productRepository.fetchProducts(page)
 
         if (products.length === 0) {
             throw new Error('Resource not found')

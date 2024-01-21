@@ -5,11 +5,12 @@ import { Optional } from '@/core/types/optional'
 interface ProductProps {
     name: string,
     image: string,
-    category: string,
+    category: 'Fem' | 'Masc' | 'Kids',
     new_price: number,
     old_price: number,
     available: boolean,
-    adds: number
+    adds: number,
+    sizes: string[]
 }
 
 export class Product extends Entity<ProductProps> {
@@ -41,6 +42,10 @@ export class Product extends Entity<ProductProps> {
         return this.props.adds
     }
 
+    get sizes() {
+        return this.props.sizes
+    }
+
     set name(name: string) {
         this.props.name = name
     }
@@ -49,7 +54,7 @@ export class Product extends Entity<ProductProps> {
         this.props.image = image
     }
 
-    set category(category: string) {
+    set category(category: 'Fem' | 'Masc' | 'Kids') {
         this.props.category = category
     }
 
@@ -69,10 +74,16 @@ export class Product extends Entity<ProductProps> {
         this.props.adds = value
     }
 
-    static create(props: Optional<ProductProps, 'adds'>, id?: UniqueID) {
+    set sizes(value: string[]) {
+        this.props.sizes = value
+    }
+
+    static create(props: Optional<ProductProps, 'adds' | 'sizes' | 'old_price'>, id?: UniqueID) {
         const product = new Product({
             ...props,
-            adds: props.adds ?? 1
+            adds: props.adds ?? 1,
+            sizes: props.sizes ?? ['P', 'M', 'G', 'XG'],
+            old_price: props.old_price ?? 0
         },
             id
         )

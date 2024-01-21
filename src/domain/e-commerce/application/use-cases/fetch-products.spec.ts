@@ -14,12 +14,12 @@ describe('Fetch Products Use Case', () => {
     })
 
     it('should be able to fetch products', async () => {
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 22; i++) {
             inMemoryProductRepositoty.create(
                 Product.create({
                     name: `product ${i}`,
                     available: true,
-                    category: 'some category',
+                    category: 'Kids',
                     image: 'url',
                     new_price: 50,
                     old_price: 40
@@ -29,14 +29,20 @@ describe('Fetch Products Use Case', () => {
             )
         }
 
-        const { products } = await sut.execute()
+        const { products } = await sut.execute({
+            page: 2
+        })
 
-        expect(products).toHaveLength(3)
+        expect(products).toHaveLength(2)
+        expect(products[0].name).toBe('product 21')
+        expect(products[1].name).toBe('product 22')
     })
 
     it('should not be able to fetch products if not exists', async () => {
         await expect(() =>
-            sut.execute()
+            sut.execute({
+                page: 1
+            })
         ).rejects.toBeInstanceOf(Error)
     })
 })

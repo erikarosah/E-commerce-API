@@ -4,10 +4,11 @@ interface UpdateProductUseCaseRequest {
     id: string,
     name: string,
     image: string,
-    category: string,
+    category: 'Fem' | 'Masc' | 'Kids',
     new_price: number,
     old_price: number,
-    available: boolean
+    available: boolean,
+    sizes: string[]
 }
 
 interface UpdateProductUseCaseResponse { }
@@ -23,6 +24,7 @@ export class UpdateProductUseCase {
         new_price,
         old_price,
         available,
+        sizes
     }: UpdateProductUseCaseRequest): Promise<UpdateProductUseCaseResponse> {
         const product = await this.productRepository.findById(id)
 
@@ -36,6 +38,7 @@ export class UpdateProductUseCase {
         product.new_price = new_price
         product.old_price = old_price
         product.available = available
+        product.sizes = sizes ?? ['P', 'M', 'G', 'XG']
 
         await this.productRepository.save(product)
 

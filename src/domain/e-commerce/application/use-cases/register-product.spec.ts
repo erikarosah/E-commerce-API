@@ -17,10 +17,11 @@ describe('Register Product Use Case', () => {
         await sut.execute({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
-            old_price: 40
+            old_price: 40,
+            sizes: []
         })
 
         expect(inMemoryProductRepositoty.items).toHaveLength(1)
@@ -31,10 +32,11 @@ describe('Register Product Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
-            old_price: 40
+            old_price: 40,
+            sizes: []
         },
             new UniqueID('1')
         )

@@ -28,10 +28,11 @@ describe('Add to Cart Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
-            old_price: 40
+            old_price: 40,
+            sizes: ['P']
         })
 
         inMemoryProductRepositoty.create(product)
@@ -60,7 +61,7 @@ describe('Add to Cart Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
             old_price: 40

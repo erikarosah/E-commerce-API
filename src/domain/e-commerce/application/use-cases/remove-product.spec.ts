@@ -17,7 +17,7 @@ describe('Remove Product Use Case', () => {
         const product = Product.create({
             name: 'some product',
             available: true,
-            category: 'some category',
+            category: 'Kids',
             image: 'url',
             new_price: 50,
             old_price: 40

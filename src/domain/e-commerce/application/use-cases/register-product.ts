@@ -4,10 +4,11 @@ import { ProductRepository } from '../repositories/product-repository'
 interface RegisterProductUseCaseRequest {
     name: string,
     image: string,
-    category: string,
+    category: 'Fem' | 'Masc' | 'Kids',
     new_price: number,
     old_price: number,
-    available: boolean
+    available: boolean,
+    sizes: string[]
 }
 
 interface RegisterProductUseCaseResponse {
@@ -24,6 +25,7 @@ export class RegisterProductUseCase {
         new_price,
         old_price,
         available,
+        sizes
     }: RegisterProductUseCaseRequest): Promise<RegisterProductUseCaseResponse> {
         const productAlreadyRegistered = await this.productRepository.findByName(name)
 
@@ -38,6 +40,7 @@ export class RegisterProductUseCase {
             new_price,
             old_price,
             available,
+            sizes
         })
 
         await this.productRepository.create(product)
