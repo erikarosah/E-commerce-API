@@ -7,7 +7,8 @@ import { NotAllowedError } from './errors/not-allowed-error'
 interface RegisterUserUseCaseRequest {
     name: string,
     email: string,
-    password: string
+    password: string,
+    role: string,
 }
 
 type RegisterUserUseCaseResponse = Either<
@@ -23,7 +24,8 @@ export class RegisterUserUseCase {
     async execute({
         name,
         email,
-        password
+        password,
+        role,
     }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
         const userAlreadyRegistered = await this.userRepository.findByEmail(email)
 
@@ -36,6 +38,7 @@ export class RegisterUserUseCase {
         const user = User.create({
             name,
             email,
+            role,
             password: password_hash
         })
 

@@ -1,6 +1,5 @@
 import { compare } from 'bcrypt'
-import { User } from '../../entities/user'
-import { UserRepository } from '../repositories/user-repository'
+import { UserRepository, newUser } from '../repositories/user-repository'
 import { Either, left, right } from '@/core/either'
 import { InvalidCrendentialsError } from './errors/invalid-credentials-error'
 
@@ -12,7 +11,7 @@ interface AuthenticateUseCaseRequest {
 type AuthenticateUseCaseResponse = Either<
     InvalidCrendentialsError,
     {
-        user: User
+        user: newUser
     }
 >
 

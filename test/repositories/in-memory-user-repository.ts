@@ -4,8 +4,12 @@ import { User } from '@/domain/e-commerce/entities/user'
 export class InMemoryUserRepository implements UserRepository {
     public items: User[] = []
 
-    async create(user: User) {
-        this.items.push(user)
+    async create(newUser: User) {
+        this.items.push(newUser)
+
+        const user = this.items[0]
+
+        return user
     }
 
     async findByEmail(email: string) {

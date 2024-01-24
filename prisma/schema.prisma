@@ -8,12 +8,11 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  email    String    @unique
+  id       String @id @default(uuid())
+  email    String @unique
   name     String
   password String
-  role     Role      @default(USER)
-  cart     Product[]
+  role     Role?  @default(USER)
 
   @@map("users")
 }
@@ -26,10 +25,8 @@ model Product {
   price     Float
   old_price Float?
   available Boolean
-  adds      Int
+  adds      Int?
   sizes     String[]
-  user      User     @relation(fields: [user_id], references: [id])
-  user_id   String
 
   @@map("products")
 }

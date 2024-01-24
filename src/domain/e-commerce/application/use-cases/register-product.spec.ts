@@ -2,7 +2,6 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryProductRepository } from 'test/repositories/in-memory-product-repository'
 import { RegisterProductUseCase } from './register-product'
 import { Product } from '../../entities/product'
-import { UniqueID } from '@/core/entities/unique-id'
 import { NotAllowedError } from './errors/not-allowed-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
@@ -20,7 +19,7 @@ describe('Register Product Use Case', () => {
             available: true,
             category: 'Kids',
             image: 'url',
-            new_price: 50,
+            price: 50,
             old_price: 40,
             sizes: []
         })
@@ -39,12 +38,10 @@ describe('Register Product Use Case', () => {
             available: true,
             category: 'Kids',
             image: 'url',
-            new_price: 50,
+            price: 50,
             old_price: 40,
             sizes: []
-        },
-            new UniqueID('1')
-        )
+        })
 
         inMemoryProductRepositoty.create(product)
 

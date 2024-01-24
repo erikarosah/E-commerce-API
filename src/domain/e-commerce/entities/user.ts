@@ -1,13 +1,13 @@
 import { Entity } from '@/core/entities/entity'
-import { UniqueID } from '@/core/entities/unique-id'
-import { Product } from './product'
 import { Optional } from '@/core/types/optional'
+import { randomUUID } from 'crypto'
 
 interface UserProps {
+    id?: string,
     name: string,
     email: string,
     password: string,
-    cart: Product[]
+    role: string,
 }
 
 export class User extends Entity<UserProps> {
@@ -19,25 +19,36 @@ export class User extends Entity<UserProps> {
         return this.props.email
     }
 
-    get cart() {
-        return this.props.cart
-    }
-
     get password() {
         return this.props.password
     }
 
-    set cart(data: Product[]) {
-        this.props.cart = data
+    get role() {
+        return this.props.role
     }
 
-    static create(props: Optional<UserProps, 'cart'>, id?: UniqueID) {
+    set name(name: string) {
+        this.props.name = name
+    }
+
+    set email(email: string) {
+        this.props.email = email
+    }
+
+    set password(password: string) {
+        this.props.password = password
+    }
+
+    set role(role: string) {
+        this.props.role = role
+    }
+
+    static create(props: Optional<UserProps, 'role' | 'id'>) {
         const user = new User({
             ...props,
-            cart: props.cart ?? []
-        },
-            id
-        )
+            role: props.role ?? 'USER',
+            id: props.id ?? randomUUID(),
+        })
 
         return user
     }

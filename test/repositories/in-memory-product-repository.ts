@@ -38,12 +38,6 @@ export class InMemoryProductRepository implements ProductRepository {
         return this.items.slice((page - 1) * 20, page * 20)
     }
 
-    async save(product: Product) {
-        const itemIndex = this.items.findIndex((item) => item.id === product.id)
-
-        this.items[itemIndex] = product
-    }
-
     async fetchManyByCategory(category: string, page: number) {
         const items = this.items.filter((item) => item.category === category).
             slice((page - 1) * 20, page * 20)

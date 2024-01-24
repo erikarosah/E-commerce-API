@@ -6,11 +6,12 @@ import { NotAllowedError } from './errors/not-allowed-error'
 interface RegisterProductUseCaseRequest {
     name: string,
     image: string,
-    category: 'Fem' | 'Masc' | 'Kids',
-    new_price: number,
-    old_price: number,
+    category: string,
+    price: number,
+    old_price?: number,
     available: boolean,
-    sizes: string[]
+    sizes: string[],
+    adds?: number
 }
 
 type RegisterProductUseCaseResponse = Either<
@@ -27,7 +28,7 @@ export class RegisterProductUseCase {
         name,
         image,
         category,
-        new_price,
+        price,
         old_price,
         available,
         sizes
@@ -42,7 +43,7 @@ export class RegisterProductUseCase {
             name,
             image,
             category,
-            new_price,
+            price,
             old_price,
             available,
             sizes

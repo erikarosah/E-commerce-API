@@ -1,7 +1,6 @@
 import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryProductRepository } from 'test/repositories/in-memory-product-repository'
 import { Product } from '../../entities/product'
-import { UniqueID } from '@/core/entities/unique-id'
 import { FetchProductsByCategoryUseCase } from './fetch-products-by-category'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
@@ -22,11 +21,9 @@ describe('Fetch Products By Category Use Case', () => {
                     available: true,
                     category: 'Kids',
                     image: 'url',
-                    new_price: 50,
+                    price: 50,
                     old_price: 40
-                },
-                    new UniqueID(`${i}`)
-                )
+                })
             )
         }
 
@@ -36,10 +33,9 @@ describe('Fetch Products By Category Use Case', () => {
                 available: true,
                 category: 'Fem',
                 image: 'url',
-                new_price: 50,
+                price: 50,
                 old_price: 40
-            },
-                new UniqueID()
+            }
             )
         )
 

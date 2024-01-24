@@ -4,25 +4,26 @@ import { RegisterUserUseCase } from './register-user'
 import { User } from '../../entities/user'
 import { NotAllowedError } from './errors/not-allowed-error'
 
-let inMemoryUserRepositoty: InMemoryUserRepository
+let inMemoryUserRepository: InMemoryUserRepository
 let sut: RegisterUserUseCase
 
 describe('Register User Use Case', () => {
     beforeEach(() => {
-        inMemoryUserRepositoty = new InMemoryUserRepository
-        sut = new RegisterUserUseCase(inMemoryUserRepositoty)
+        inMemoryUserRepository = new InMemoryUserRepository
+        sut = new RegisterUserUseCase(inMemoryUserRepository)
     })
 
     it('should be able to register a user', async () => {
         const result = await sut.execute({
             name: 'some name',
             email: 'some email',
-            password: 'some password'
+            password: 'some password',
+            role: 'USER'
         })
 
         expect(result.isRight()).toBe(true)
-        expect(inMemoryUserRepositoty.items).toHaveLength(1)
-        expect(inMemoryUserRepositoty.items[0]).toMatchObject({
+        expect(inMemoryUserRepository.items).toHaveLength(1)
+        expect(inMemoryUserRepository.items[0]).toMatchObject({
             name: 'some name'
         })
     })
@@ -34,12 +35,13 @@ describe('Register User Use Case', () => {
             password: 'some password'
         })
 
-        inMemoryUserRepositoty.create(user)
+        inMemoryUserRepository.create(user)
 
         const result = await sut.execute({
             name: 'another name',
             email: user.email,
-            password: 'another password'
+            password: 'another password',
+            role: 'USER'
         })
 
         expect(result.isLeft()).toBe(true)

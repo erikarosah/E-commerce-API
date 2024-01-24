@@ -2,7 +2,6 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryProductRepository } from 'test/repositories/in-memory-product-repository'
 import { RemoveProductUseCase } from './remove-product'
 import { Product } from '../../entities/product'
-import { UniqueID } from '@/core/entities/unique-id'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
@@ -20,11 +19,9 @@ describe('Remove Product Use Case', () => {
             available: true,
             category: 'Kids',
             image: 'url',
-            new_price: 50,
+            price: 50,
             old_price: 40
-        },
-            new UniqueID('1')
-        )
+        })
 
         inMemoryProductRepositoty.create(product)
 

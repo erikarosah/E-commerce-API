@@ -2,7 +2,6 @@ import { describe, beforeEach, it, expect } from 'vitest'
 import { InMemoryProductRepository } from 'test/repositories/in-memory-product-repository'
 import { FetchProductsUseCase } from './fetch-products'
 import { Product } from '../../entities/product'
-import { UniqueID } from '@/core/entities/unique-id'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let inMemoryProductRepositoty: InMemoryProductRepository
@@ -22,11 +21,9 @@ describe('Fetch Products Use Case', () => {
                     available: true,
                     category: 'Kids',
                     image: 'url',
-                    new_price: 50,
+                    price: 50,
                     old_price: 40
-                },
-                    new UniqueID(`${i}`)
-                )
+                })
             )
         }
 
