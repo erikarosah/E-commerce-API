@@ -5,14 +5,19 @@ export async function fetchUnavailableProducts(request: FastifyRequest, reply: F
     try {
         const fetchProducts = makeFetchUnavailableProducts()
 
-        const products = await fetchProducts.execute()
+        const result = await fetchProducts.execute()
+
+        if (result.isLeft()) {
+            return result.value
+        }
 
         return reply.status(200).send([
-            products.value
+            result.value
         ])
 
     } catch (error) {
-        throw new Error('Error fetching products')
+        return reply.status(500).send({
+            error
+        })
     }
-
 }

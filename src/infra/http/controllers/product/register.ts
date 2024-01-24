@@ -26,7 +26,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     try {
         const registerUseCase = makeRegisterProductUseCase()
 
-        await registerUseCase.execute({
+        const result = await registerUseCase.execute({
             name,
             image,
             category,
@@ -36,9 +36,15 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
             sizes
         })
 
+        if (result.isLeft()) {
+            return result.value
+        }
+
         return reply.status(201).send()
 
     } catch (error) {
-        throw new Error('An error has occurred')
+        return reply.status(500).send({
+            error
+        })
     }
 }

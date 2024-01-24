@@ -14,13 +14,19 @@ export async function deleteProduct(request: FastifyRequest, reply: FastifyReply
     try {
         const deleteProduct = makeDeleteProductUseCase()
 
-        await deleteProduct.execute({
+        const result = await deleteProduct.execute({
             id
         })
+
+        if (result.isLeft()) {
+            return result.value
+        }
 
         return reply.status(200).send()
 
     } catch (error) {
-        throw new Error('Error delete products')
+        return reply.status(500).send({
+            error
+        })
     }
 }

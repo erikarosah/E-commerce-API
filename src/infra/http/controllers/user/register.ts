@@ -15,16 +15,22 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     try {
         const registerUseCase = makeRegisterUserUseCase()
 
-        await registerUseCase.execute({
+        const result = await registerUseCase.execute({
             name,
             email,
             password,
             role
         })
 
+        if (result.isLeft()) {
+            return result.value
+        }
+
         return reply.status(201).send()
 
     } catch (error) {
-        throw new Error('Not allowed')
+        return reply.status(500).send({
+            error
+        })
     }
 }

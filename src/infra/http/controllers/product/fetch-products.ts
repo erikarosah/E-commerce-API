@@ -14,16 +14,22 @@ export async function fetchProducts(request: FastifyRequest, reply: FastifyReply
     try {
         const fetchProducts = makeFetchProductsUseCase()
 
-        const products = await fetchProducts.execute({
+        const result = await fetchProducts.execute({
             page
         })
 
+        if (result.isLeft()) {
+            return result.value
+        }
+
         return reply.status(200).send([
-            products.value
+            result.value
         ])
 
     } catch (error) {
-        throw new Error('Error fetching products')
+        return reply.status(500).send({
+            error
+        })
     }
 
 }
