@@ -1,17 +1,16 @@
 import { Either, left, right } from '@/core/either'
-import { Product } from '../../entities/product'
-import { ProductRepository } from '../repositories/product-repository'
+import { ProductRepository, product } from '../repositories/product-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 interface FetchProductsByCategoryUseCaseRequest {
-    category: 'Fem' | 'Masc' | 'Kids',
+    category: string,
     page: number
 }
 
 type FetchProductsByCategoryUseCaseResponse = Either<
     ResourceNotFoundError,
     {
-        products: Product[]
+        products: product[]
     }
 >
 

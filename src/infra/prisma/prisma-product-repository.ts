@@ -8,7 +8,7 @@ export class PrismaProductRepository implements ProductRepository {
             data: {
                 name: newProduct.name,
                 available: newProduct.available,
-                category: newProduct.category,
+                category: newProduct.category.toUpperCase(),
                 image: newProduct.image,
                 price: newProduct.price,
                 sizes: newProduct.sizes,
@@ -69,10 +69,10 @@ export class PrismaProductRepository implements ProductRepository {
     async fetchManyByCategory(category: string, page: number) {
         const products = await prisma.product.findMany({
             where: {
-                category
+                category: category.toUpperCase(),
             },
-            skip: page * 20,
-            take: page * 20
+            skip: page != 1 ? page * 20 : 0,
+            take: 20
         })
 
         return products

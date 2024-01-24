@@ -23,7 +23,6 @@ export async function fetchProducts(request: FastifyRequest, reply: FastifyReply
         ])
 
     } catch (error) {
-        console.log(error)
         throw new Error('Error fetching products')
     }
 
