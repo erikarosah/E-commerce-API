@@ -25,7 +25,6 @@ model Product {
   price     Float
   old_price Float?
   available Boolean
-  adds      Int?
   sizes     String[]
 
   @@map("products")
