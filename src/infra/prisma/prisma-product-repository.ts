@@ -77,4 +77,18 @@ export class PrismaProductRepository implements ProductRepository {
 
         return products
     }
+
+    async fetchUnavailables() {
+        const products = await prisma.product.findMany({
+            where: {
+                available: false
+            }
+        })
+
+        if (!products) {
+            return null
+        }
+
+        return products
+    }
 }

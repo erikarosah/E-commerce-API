@@ -28,4 +28,5 @@ export interface ProductRepository {
     delete(id: string): Promise<void>
     fetchProducts(page: number): Promise<product[]>
     fetchManyByCategory(category: string, page: number): Promise<product[] | null>
+    fetchUnavailables(): Promise<product[] | null>
 }

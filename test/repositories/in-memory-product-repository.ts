@@ -48,4 +48,13 @@ export class InMemoryProductRepository implements ProductRepository {
 
         return items
     }
+
+    async fetchUnavailables() {
+        const items = this.items.filter((item) => item.available === false)
+        if (!items) {
+            return null
+        }
+
+        return items
+    }
 }
