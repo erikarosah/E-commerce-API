@@ -57,7 +57,10 @@ export class PrismaProductRepository implements ProductRepository {
     async fetchProducts(page: number) {
         const products = await prisma.product.findMany({
             skip: page != 1 ? page * 20 : 0,
-            take: 20
+            take: 20,
+            orderBy: {
+                name: 'asc'
+            }
         })
 
         return products
