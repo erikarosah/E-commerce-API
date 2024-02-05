@@ -33,7 +33,7 @@ export class RegisterProductUseCase {
         available,
         sizes
     }: RegisterProductUseCaseRequest): Promise<RegisterProductUseCaseResponse> {
-        const productAlreadyRegistered = await this.productRepository.findByName(name)
+        const productAlreadyRegistered = await this.productRepository.findByNameUnique(name)
 
         if (productAlreadyRegistered) {
             return left(new NotAllowedError())

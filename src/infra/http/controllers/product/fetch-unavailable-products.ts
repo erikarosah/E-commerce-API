@@ -8,11 +8,11 @@ export async function fetchUnavailableProducts(request: FastifyRequest, reply: F
         const result = await fetchProducts.execute()
 
         if (result.isLeft()) {
-            return result.value
+            return result.value.message
         }
 
         return reply.status(200).send([
-            result.value
+            result.value.products
         ])
 
     } catch (error) {

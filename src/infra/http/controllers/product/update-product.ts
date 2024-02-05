@@ -1,16 +1,20 @@
 import { z } from 'zod'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { makeRegisterProductUseCase } from '@/infra/factories/products/make-register-product'
+import { makeUpdateProductUseCase } from '@/infra/factories/products/make-update-product'
 
-export async function register(request: FastifyRequest, reply: FastifyReply) {
+export async function updateProduct(request: FastifyRequest, reply: FastifyReply) {
     const registerBodySchema = z.object({
         name: z.string(),
         image: z.string(),
         category: z.string(),
         price: z.coerce.number(),
         old_price: z.coerce.number(),
-        available: z.coerce.boolean(),
+        available: z.string(),
         sizes: z.any()
+    })
+
+    const registerParamsSchema = z.object({
+        id: z.string()
     })
 
     const {
@@ -23,10 +27,13 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         sizes
     } = registerBodySchema.parse(request.body)
 
+    const {
+        id
+    } = registerParamsSchema.parse(request.params)
     try {
-        const registerUseCase = makeRegisterProductUseCase()
-
-        const result = await registerUseCase.execute({
+        const updateProduct = makeUpdateProductUseCase()
+        const result = await updateProduct.execute({
+            id,
             name,
             image,
             category,
@@ -40,7 +47,9 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
             return result.value.message
         }
 
-        return reply.status(201).send()
+        return reply.status(200).send([
+            result.value
+        ])
 
     } catch (error) {
         return reply.status(500).send({

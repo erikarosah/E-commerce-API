@@ -1,5 +1,5 @@
 import { prisma } from '@/app'
-import { ProductCreateInput, ProductRepository } from '@/domain/e-commerce/application/repositories/product-repository'
+import { ProductCreateInput, ProductRepository, product } from '@/domain/e-commerce/application/repositories/product-repository'
 
 export class PrismaProductRepository implements ProductRepository {
 
@@ -18,15 +18,36 @@ export class PrismaProductRepository implements ProductRepository {
 
     }
 
-    async findByName(name: string) {
-        const product = await prisma.product.findFirst({
+    async findByNameUnique(name: string) {
+        const products = await prisma.product.findFirst({
             where: {
-                name
+                name: name
             }
         })
 
-        if (product) {
-            return product
+        if (products) {
+            return products
+        }
+
+        return null
+    }
+
+    async findByName(query: string,) {
+        const products = await prisma.product.findMany({
+            where: {
+                name: {
+                    contains: query,
+                    mode: 'insensitive'
+                }
+            },
+            take: 10,
+            orderBy: {
+                name: 'asc'
+            }
+        })
+
+        if (products) {
+            return products
         }
 
         return null
@@ -54,10 +75,11 @@ export class PrismaProductRepository implements ProductRepository {
         })
     }
 
-    async fetchProducts(page: number) {
+    async fetchProducts() {
         const products = await prisma.product.findMany({
-            skip: page != 1 ? page * 20 : 0,
-            take: 20,
+            where: {
+                available: true
+            },
             orderBy: {
                 name: 'asc'
             }
@@ -66,13 +88,26 @@ export class PrismaProductRepository implements ProductRepository {
         return products
     }
 
-    async fetchManyByCategory(category: string, page: number) {
+    async fetchManyByCategory(category: string,) {
         const products = await prisma.product.findMany({
             where: {
                 category: category.toUpperCase(),
-            },
-            skip: page != 1 ? page * 20 : 0,
-            take: 20
+
+            }
+        })
+
+        return products
+    }
+
+    async fetchManyByCategoryAndType(category: string, query: string,) {
+        const products = await prisma.product.findMany({
+            where: {
+                category: category.toUpperCase(),
+                name: {
+                    contains: query,
+                    mode: 'insensitive'
+                }
+            }
         })
 
         return products
@@ -90,5 +125,37 @@ export class PrismaProductRepository implements ProductRepository {
         }
 
         return products
+    }
+
+    async update(id: string, data: product) {
+        const product = await prisma.product.update({
+            where: {
+                id: id
+            },
+            data: {
+                name: data?.name,
+                image: data?.image,
+                available: data?.available === 'false' ? false : true,
+                category: data?.category,
+                price: data?.price,
+                old_price: data?.old_price,
+                sizes: data?.sizes
+            }
+        })
+
+        if (!product) {
+            console.log('nao tem')
+            return null
+        }
+        return product
+    }
+
+    async countProducts(arr: product[]) {
+        const total = arr.filter((item) => item?.available === true)
+        if (total.length === 0) {
+            return null
+        }
+
+        return total.length
     }
 }

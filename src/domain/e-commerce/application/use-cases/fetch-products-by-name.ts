@@ -2,20 +2,26 @@ import { Either, left, right } from '@/core/either'
 import { ProductRepository, product } from '../repositories/product-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
-type FetchProductsUseCaseResponse = Either<
+interface FetchProductsByNameUseCaseRequest {
+    name: string
+}
+
+type FetchProductsByNameUseCaseResponse = Either<
     ResourceNotFoundError,
     {
         products: product[]
     }
 >
 
-export class FetchProductsUseCase {
+export class FetchProductsByNameUseCase {
     constructor(private productRepository: ProductRepository) { }
 
-    async execute(): Promise<FetchProductsUseCaseResponse> {
-        const products = await this.productRepository.fetchProducts()
+    async execute({
+        name
+    }: FetchProductsByNameUseCaseRequest): Promise<FetchProductsByNameUseCaseResponse> {
+        const products = await this.productRepository.findByName(name)
 
-        if (products.length === 0) {
+        if (!products || products.length === 0) {
             return left(new ResourceNotFoundError())
         }
 

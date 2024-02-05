@@ -1,21 +1,21 @@
 import { z } from 'zod'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { makeFetchProductsByCategoryUseCase } from '@/infra/factories/products/make-fetch-products-by-category'
+import { makeFetchProductsByNameUseCase } from '@/infra/factories/products/make-fetch-products-by-name'
 
-export async function fetchProductsByCategory(request: FastifyRequest, reply: FastifyReply) {
+export async function fetchProductsByName(request: FastifyRequest, reply: FastifyReply) {
     const registerBodySchema = z.object({
-        category: z.string()
+        name: z.string()
     })
 
     const {
-        category
+        name
     } = registerBodySchema.parse(request.params)
 
     try {
-        const fetchProductsByCategory = makeFetchProductsByCategoryUseCase()
+        const fetchProductsByName = makeFetchProductsByNameUseCase()
 
-        const result = await fetchProductsByCategory.execute({
-            category
+        const result = await fetchProductsByName.execute({
+            name
         })
 
         if (result.isLeft()) {

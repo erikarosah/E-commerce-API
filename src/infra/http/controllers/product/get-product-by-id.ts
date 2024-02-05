@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { makeDeleteProductUseCase } from '@/infra/factories/products/make-delete-product'
+import { makeGetProductByIdUseCase } from '@/infra/factories/products/make-get-product-by-id'
 
-export async function deleteProduct(request: FastifyRequest, reply: FastifyReply) {
+export async function getProductById(request: FastifyRequest, reply: FastifyReply) {
     const registerBodySchema = z.object({
-        id: z.coerce.string()
+        id: z.string()
     })
 
     const {
@@ -12,9 +12,9 @@ export async function deleteProduct(request: FastifyRequest, reply: FastifyReply
     } = registerBodySchema.parse(request.params)
 
     try {
-        const deleteProduct = makeDeleteProductUseCase()
+        const product = makeGetProductByIdUseCase()
 
-        const result = await deleteProduct.execute({
+        const result = await product.execute({
             id
         })
 
@@ -22,11 +22,14 @@ export async function deleteProduct(request: FastifyRequest, reply: FastifyReply
             return result.value.message
         }
 
-        return reply.status(200).send()
+        return reply.status(200).send([
+            result.value.product
+        ])
 
     } catch (error) {
         return reply.status(500).send({
             error
         })
     }
+
 }

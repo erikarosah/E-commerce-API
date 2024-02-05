@@ -8,14 +8,24 @@ export class InMemoryProductRepository implements ProductRepository {
         this.items.push(product)
     }
 
-    async findByName(name: string) {
-        const product = this.items.find((item) => item.name === name)
+    async findByName(query: string) {
+        const products = this.items.filter((item) => item.name.includes(query))
 
-        if (product) {
-            return product
+        if (!products) {
+            return null
         }
 
-        return null
+        return products
+    }
+
+    async findByNameUnique(name: string) {
+        const product = this.items.find((item) => item.name.includes(name))
+
+        if (!product) {
+            return null
+        }
+
+        return product
     }
 
     async findById(id: string) {
@@ -34,13 +44,24 @@ export class InMemoryProductRepository implements ProductRepository {
         this.items.splice(productIndex, 1)
     }
 
-    async fetchProducts(page: number) {
-        return this.items.slice((page - 1) * 20, page * 20)
+    async fetchProducts() {
+        return this.items
     }
 
-    async fetchManyByCategory(category: string, page: number) {
-        const items = this.items.filter((item) => item.category === category).
-            slice((page - 1) * 20, page * 20)
+    async fetchManyByCategory(category: string) {
+        const items = this.items.filter((item) => item.category === category)
+
+        if (!items) {
+            return null
+        }
+
+        return items
+    }
+
+    async fetchManyByCategoryAndType(category: string, query: string) {
+        const itemsCategory = this.items.filter((item) => item.category === category)
+
+        const items = itemsCategory.filter((item) => item.name.includes(query))
 
         if (!items) {
             return null
@@ -56,5 +77,15 @@ export class InMemoryProductRepository implements ProductRepository {
         }
 
         return items
+    }
+
+    async update(id: string, data: Product) {
+        const productIndex = this.items.findIndex((item) => item.id === id)
+        const product = this.items[productIndex] = data
+        if (!product) {
+            return null
+        }
+
+        return product
     }
 }

@@ -33,7 +33,9 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
         })
 
         return reply.status(200).send({
-            token: token
+            token: token,
+            user: result.value.user.name,
+            role: result.value.user.role
         })
 
     } catch (error) {
